@@ -14,14 +14,12 @@ public class MainTest {
 
     public static void main(String[] args) {
 
-        System.out.println(System.getenv("HADOOP_HOME"));
-
+        //连接Hadoop 读取文件
         String uri = "hdfs://127.0.0.1:9000/tmp/input/file.txt";
         Configuration configuration = new Configuration();
         //configuration.set("fs.defaultFS", "hdfs://127.0.0.1:9000");
         //configuration.set("hadoop.home.dir", "/Users/huangshuai/Documents/hadoop-2.9.2");
         //configuration.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-
         try {
             FileSystem fileSystem = FileSystem.get(URI.create(uri), configuration);
             FSDataInputStream in = null;
