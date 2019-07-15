@@ -33,8 +33,8 @@ public class PartitionerApp {
             String[] words = line.split(" ");
             context.write(new Text(words[0]), new LongWritable(Long.parseLong(words[1])));
         }
-
     }
+
 
     /**
      * Reduce: 归并操作
@@ -55,6 +55,7 @@ public class PartitionerApp {
 
 
     public static class MyPartitioner extends Partitioner<Text, LongWritable> {
+
         @Override
         public int getPartition(Text key, LongWritable value, int numPartitions) {
             if (key.toString().equals("Apple")) {
@@ -80,12 +81,12 @@ public class PartitionerApp {
 
         //懒得在IDEA配置 args 参数
         args = new String[2];
-        args[0] = "hdfs://192.168.19.128:8020/springhdfs/fruits.txt";
-        args[1] = "hdfs://192.168.19.128:8020/output/fruits";
+        args[0] = "hdfs://127.0.0.1:9000/tmp/input/fruit.txt";
+        args[1] = "hdfs://127.0.0.1:9000/tmp/output/file";
 
         // 创建 Configuration
         Configuration configuration = new Configuration();
-        configuration.set("fs.defaultFS", "hdfs://192.168.19.128:8020");
+        configuration.set("fs.defaultFS", "hdfs://127.0.0.1:9000");
 
         // 清除已存在的文件目录
         Path outputPath = new Path(args[1]);
@@ -113,7 +114,6 @@ public class PartitionerApp {
         job.setReducerClass(MyReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
-
 
         // 设置job的Partitioner
         job.setPartitionerClass(MyPartitioner.class);
