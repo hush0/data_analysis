@@ -36,6 +36,18 @@ public class PartitionerApp {
     }
 
 
+
+    public static class WordMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+
+        @Override
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            // 接收到的每一行数据
+            String line = value.toString();
+            context.write(new Text(line), new LongWritable(1));
+        }
+    }
+
+
     /**
      * Reduce: 归并操作
      */
@@ -81,7 +93,7 @@ public class PartitionerApp {
 
         //懒得在IDEA配置 args 参数
         args = new String[2];
-        args[0] = "hdfs://127.0.0.1:9000/tmp/input/fruit.txt";
+        args[0] = "hdfs://127.0.0.1:9000/tmp/input/file.txt";
         args[1] = "hdfs://127.0.0.1:9000/tmp/output/file";
 
         // 创建 Configuration
@@ -106,7 +118,8 @@ public class PartitionerApp {
         FileInputFormat.setInputPaths(job, new Path(args[0]));
 
         // 设置map 相关参数
-        job.setMapperClass(MyMapper.class);
+        //job.setMapperClass(MyMapper.class);
+        job.setMapperClass(WordMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setOutputValueClass(LongWritable.class);
 
@@ -116,9 +129,11 @@ public class PartitionerApp {
         job.setOutputValueClass(LongWritable.class);
 
         // 设置job的Partitioner
-        job.setPartitionerClass(MyPartitioner.class);
+        //job.setPartitionerClass(MyPartitioner.class);
         // 设置4个reducer， 每个类别一个
-        job.setNumReduceTasks(4);
+        //job.setNumReduceTasks(4);
+
+        job.setNumReduceTasks(1);
 
 
         //设置作业处理的输出路径
